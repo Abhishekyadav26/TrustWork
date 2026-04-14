@@ -1,75 +1,102 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { JobData } from '@/lib/contracts-simple';
-import { Clock, DollarSign, User, ExternalLink } from 'lucide-react';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { stellarContractManager, JobContract } from "@/lib/stellar-contracts";
+import { DollarSign, User, ExternalLink, AlertCircle } from "lucide-react";
 
 interface JobBoardProps {
   address: string;
 }
 
 export function JobBoard({ address }: JobBoardProps) {
-  const [jobs, setJobs] = useState<JobData[]>([]);
+  const [jobs, setJobs] = useState<JobContract[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Mock data for now - in real implementation, this would fetch from contracts
-    const mockJobs: JobData[] = [
-      {
-        id: 1,
-        client: 'GCLIENT123456789',
-        title: 'Build React Dashboard',
-        budget: '1000',
-        status: 'Open',
-        freelancer: undefined,
-      },
-      {
-        id: 2,
-        client: 'GCLIENT987654321',
-        title: 'Smart Contract Audit',
-        budget: '2500',
-        status: 'InProgress',
-        freelancer: 'GFREELANCER123',
-      },
-      {
-        id: 3,
-        client: 'GCLIENT567890123',
-        title: 'UI/UX Design for DApp',
-        budget: '1500',
-        status: 'Completed',
-        freelancer: 'GFREELANCER456',
-      },
-    ];
-
-    setTimeout(() => {
-      setJobs(mockJobs);
-      setIsLoading(false);
-    }, 1000);
+    fetchJobs();
   }, [address]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Open':
-        return 'bg-green-100 text-green-800';
-      case 'InProgress':
-        return 'bg-blue-100 text-blue-800';
-      case 'Completed':
-        return 'bg-gray-100 text-gray-800';
-      case 'Disputed':
-        return 'bg-red-100 text-red-800';
-      case 'Cancelled':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Fetch all jobs from Stellar contracts
+      const allJobs = await stellarContractManager.getAllJobs();
+      setJobs(allJobs);
+    } catch (err) {
+      console.error("Error fetching jobs:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch jobs");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleApplyForJob = (jobId: number) => {
-    console.log('Applying for job:', jobId);
-    // In real implementation, this would call the contract
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "open":
+        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300";
+      case "in_progress":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300";
+      case "completed":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
+      case "disputed":
+        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
+    }
+  };
+
+  const handleApplyForJob = async (jobId: string) => {
+    try {
+      setError(null);
+
+      // In a real implementation, this would call the contract to apply for the job
+      // For now, we'll simulate the application process
+      const job = jobs.find((j) => j.id === jobId);
+      if (!job) {
+        throw new Error("Job not found");
+      }
+
+      // Update job status to in_progress and assign freelancer
+      job.status = "in_progress";
+      job.freelancerAddress = address;
+
+      // Store updated job (in real implementation, this would be a contract call)
+      await stellarContractManager.deployJobContract(
+        job.clientAddress,
+        job.title,
+        job.description,
+        job.budget,
+        job.deadline,
+      );
+
+      // Refresh jobs list
+      await fetchJobs();
+
+      console.log("Successfully applied for job:", jobId);
+    } catch (err) {
+      console.error("Error applying for job:", err);
+      setError(err instanceof Error ? err.message : "Failed to apply for job");
+    }
+  };
+
+  const formatAddress = (addr: string) => {
+    return `${addr.substring(0, 8)}...${addr.substring(addr.length - 8)}`;
+  };
+
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString();
   };
 
   if (isLoading) {
@@ -101,6 +128,13 @@ export function JobBoard({ address }: JobBoardProps) {
         <p className="text-muted-foreground">{jobs.length} jobs available</p>
       </div>
 
+      {error && (
+        <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+        </div>
+      )}
+
       <div className="grid gap-4">
         {jobs.map((job) => (
           <Card key={job.id} className="hover:shadow-md transition-shadow">
@@ -110,30 +144,44 @@ export function JobBoard({ address }: JobBoardProps) {
                   <CardTitle className="text-xl">{job.title}</CardTitle>
                   <CardDescription className="flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    Client: {job.client.slice(0, 8)}...
+                    Client: {formatAddress(job.clientAddress)}
+                  </CardDescription>
+                  <CardDescription>
+                    Posted: {formatDate(job.createdAt)}
+                    {job.deadline && ` • Deadline: ${formatDate(job.deadline)}`}
                   </CardDescription>
                 </div>
                 <Badge className={getStatusColor(job.status)}>
-                  {job.status}
+                  {job.status.replace("_", " ")}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                {job.description}
+              </p>
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
                     <DollarSign className="h-4 w-4" />
                     <span className="font-semibold">{job.budget} XLM</span>
                   </div>
-                  {job.freelancer && (
+                  {job.freelancerAddress && (
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <User className="h-4 w-4" />
-                      Assigned to: {job.freelancer.slice(0, 8)}...
+                      Assigned to: {formatAddress(job.freelancerAddress)}
+                    </div>
+                  )}
+                  {job.milestones.length > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      {job.milestones.length} milestone
+                      {job.milestones.length !== 1 ? "s" : ""}
                     </div>
                   )}
                 </div>
                 <div className="flex gap-2">
-                  {job.status === 'Open' && (
+                  {job.status === "open" && address !== job.clientAddress && (
                     <Button onClick={() => handleApplyForJob(job.id)}>
                       Apply Now
                     </Button>
@@ -149,11 +197,14 @@ export function JobBoard({ address }: JobBoardProps) {
         ))}
       </div>
 
-      {jobs.length === 0 && (
+      {jobs.length === 0 && !error && (
         <Card>
           <CardContent className="text-center py-12">
             <h3 className="text-lg font-semibold mb-2">No jobs available</h3>
-            <p className="text-muted-foreground">Check back later for new opportunities</p>
+            <p className="text-muted-foreground">
+              Be the first to post a job or check back later for new
+              opportunities
+            </p>
           </CardContent>
         </Card>
       )}

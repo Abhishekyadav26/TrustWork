@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WalletConnect } from "@/components/WalletConnect";
 import { JobBoard } from "@/components/JobBoard";
 import { PostJob } from "@/components/PostJob";
@@ -12,14 +12,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Briefcase, PlusCircle, ListTodo, Scale } from "lucide-react";
+import { Briefcase, PlusCircle, ListTodo, Scale, Loader2 } from "lucide-react";
 
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string>("");
+  const [isInitializing, setIsInitializing] = useState(true);
   const [activeTab, setActiveTab] = useState<
     "jobs" | "post" | "escrow" | "arbitration"
   >("jobs");
+
+  // Simulate app initialization
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 2000); // 2 second initialization delay
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleConnect = (walletAddress: string) => {
     setAddress(walletAddress);
@@ -30,6 +40,31 @@ export default function Home() {
     setAddress("");
     setIsConnected(false);
   };
+
+  // Show initialization loader
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl mb-6 shadow-lg">
+            <Loader2 className="h-10 w-10 text-white animate-spin" />
+          </div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            TrustWork
+          </h1>
+          <p className="text-lg text-muted-foreground font-medium mb-2">
+            Initializing Platform...
+          </p>
+          <div className="flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
+            <span className="text-sm text-muted-foreground">
+              Setting up Stellar blockchain connection
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isConnected) {
     return (
