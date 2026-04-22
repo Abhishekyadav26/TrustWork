@@ -9,6 +9,8 @@ import TestimonialV2 from "@/components/ui/testimonial-v2";
 import { FloatingPaths } from "@/components/ui/background-paths";
 import { LogoCloud } from "@/components/ui/logo-cloud-3";
 import { FlickeringFooter } from "@/components/ui/flickering-footer";
+import { AccordionDemo } from "@/components/accordion-demo";
+import { FeaturesDemo } from "@/components/features-8-demo";
 import { JobBoard } from "@/components/JobBoard";
 import { PostJob } from "@/components/PostJob";
 import { Button } from "@/components/ui/button";
@@ -281,49 +283,8 @@ export default function Home() {
           <div className="mx-auto mt-5 h-px max-w-3xl bg-border [mask-image:linear-gradient(to_right,transparent,black,transparent)]" />
         </section>
 
-        {/* Problem vs Solution Section */}
-        <section className="problem-section py-32 relative bg-muted/30 ">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">The Web3 Gap: <span className="text-blue-500">Solved</span></h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Traditional platforms take massive cuts and hold all the power. TrustWork returns control to clients and freelancers.</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-              {/* Web2 Card */}
-              <div className="problem-card bg-white dark:bg-white/5 border border-border dark:border-white/10 rounded-3xl p-10 backdrop-blur-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-6 opacity-10">
-                  <span className="text-8xl font-black">2.0</span>
-                </div>
-                <h3 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-6 flex items-center gap-3">
-                  <span className="w-3 h-3 rounded-full bg-red-500"></span> Traditional Platforms
-                </h3>
-                <ul className="space-y-4 text-gray-600 dark:text-gray-400">
-                  <li className="flex items-start gap-3"><div className="mt-1 text-red-600 dark:text-red-400">✕</div> 20% commission fees</li>
-                  <li className="flex items-start gap-3"><div className="mt-1 text-red-600 dark:text-red-400">✕</div> Centralized account freezing</li>
-                  <li className="flex items-start gap-3"><div className="mt-1 text-red-600 dark:text-red-400">✕</div> Opaque dispute resolution</li>
-                  <li className="flex items-start gap-3"><div className="mt-1 text-red-600 dark:text-red-400">✕</div> Locked-in reputation</li>
-                </ul>
-              </div>
-
-              {/* Web3 Card */}
-              <div className="problem-card bg-blue-50 dark:bg-blue-900/20 border border-blue-500/30 rounded-3xl p-10 backdrop-blur-sm relative overflow-hidden shadow-[0_0_50px_rgba(59,130,246,0.1)]">
-                <div className="absolute top-0 right-0 p-6 opacity-10">
-                  <span className="text-8xl font-black text-blue-600 dark:text-blue-400">3.0</span>
-                </div>
-                <h3 className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-6 flex items-center gap-3">
-                  <span className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"></span> TrustWork
-                </h3>
-                <ul className="space-y-4 text-foreground">
-                  <li className="flex items-start gap-3"><div className="mt-1 text-blue-600 dark:text-blue-400">✓</div> 0% protocol fees on contracts</li>
-                  <li className="flex items-start gap-3"><div className="mt-1 text-blue-600 dark:text-blue-400">✓</div> Non-custodial XLM escrow</li>
-                  <li className="flex items-start gap-3"><div className="mt-1 text-blue-600 dark:text-blue-400">✓</div> Decentralized on-chain arbitration</li>
-                  <li className="flex items-start gap-3"><div className="mt-1 text-blue-600 dark:text-blue-400">✓</div> Portable TRUST token reputation</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Features Block */}
+        <FeaturesDemo />
 
         {/* Features Section */}
         <section className="features-section py-32 relative">
@@ -378,8 +339,16 @@ export default function Home() {
         {/* Testimonials Section */}
         <TestimonialV2 />
 
+        {/* FAQ Section */}
+        <section className="py-24 relative bg-muted/10">
+          <div className="container mx-auto px-6 max-w-4xl flex flex-col items-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Frequently Asked Questions</h2>
+            <AccordionDemo />
+          </div>
+        </section>
+
         {/* CTA Section */}
-        <section className="py-32 relative border-t border-border bg-gradient-to-b from-background to-blue-50 dark:to-blue-950/20">
+        <section className="py-32 relative bg-gradient-to-b from-background to-blue-50 dark:to-blue-950/20">
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-5xl font-bold mb-8">Ready to work freely?</h2>
             <div className="inline-block relative group">

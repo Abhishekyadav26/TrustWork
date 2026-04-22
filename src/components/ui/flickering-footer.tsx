@@ -1091,23 +1091,6 @@ export const siteConfig = {
         { id: 4, title: "TRUST Token", url: "#" },
       ],
     },
-    {
-      title: "Company",
-      links: [
-        { id: 5, title: "About Us", url: "#" },
-        { id: 6, title: "Careers", url: "#" },
-        { id: 7, title: "Blog", url: "#" },
-        { id: 8, title: "Contact", url: "#" },
-      ],
-    },
-    {
-      title: "Legal",
-      links: [
-        { id: 9, title: "Terms of Service", url: "#" },
-        { id: 10, title: "Privacy Policy", url: "#" },
-        { id: 11, title: "Smart Contract Audit", url: "#" },
-      ],
-    },
   ],
 };
 
