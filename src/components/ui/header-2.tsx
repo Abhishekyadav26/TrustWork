@@ -4,6 +4,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { useScroll } from '@/components/ui/use-scroll';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Header({ actions }: { actions?: React.ReactNode }) {
 	const [open, setOpen] = React.useState(false);
@@ -12,10 +13,6 @@ export function Header({ actions }: { actions?: React.ReactNode }) {
 	const links = [
 		{
 			label: 'Features',
-			href: '#',
-		},
-		{
-			label: 'Pricing',
 			href: '#',
 		},
 		{
@@ -42,9 +39,9 @@ export function Header({ actions }: { actions?: React.ReactNode }) {
 	return (
 		<header
 			className={cn(
-				'sticky top-0 z-50 mx-auto w-full max-w-5xl border-b border-transparent md:rounded-md md:border md:transition-all md:ease-out',
+				'sticky top-0 z-50 mx-auto w-full max-w-5xl md:rounded-md md:transition-all md:ease-out',
 				{
-					'bg-background/95 supports-[backdrop-filter]:bg-background/50 border-border backdrop-blur-lg md:top-4 md:max-w-4xl md:shadow':
+					'bg-background/95 supports-[backdrop-filter]:bg-background/50 backdrop-blur-lg md:top-4 md:max-w-4xl md:shadow':
 						scrolled && !open,
 					'bg-background/90': open,
 				},
@@ -59,8 +56,8 @@ export function Header({ actions }: { actions?: React.ReactNode }) {
 				)}
 			>
 				<div className="flex items-center gap-3">
-					<WordmarkIcon className="h-6 text-blue-500" />
-					<span className="font-bold text-2xl tracking-tight text-white hidden md:block">TrustWork</span>
+					
+					<span className="font-bold text-foreground text-2xl tracking-tight hidden md:block">TrustWork</span>
 				</div>
 				<div className="hidden items-center gap-4 md:flex">
 					{links.map((link, i) => (
@@ -68,7 +65,8 @@ export function Header({ actions }: { actions?: React.ReactNode }) {
 							{link.label}
 						</a>
 					))}
-					<div className="scale-110 origin-right">
+					<div className="flex items-center gap-2 scale-110 origin-right">
+						<ThemeToggle />
 						{actions}
 					</div>
 				</div>
@@ -105,6 +103,9 @@ export function Header({ actions }: { actions?: React.ReactNode }) {
 						))}
 					</div>
 					<div className="flex flex-col gap-2">
+						<div className="flex justify-end mb-2">
+							<ThemeToggle />
+						</div>
 						{actions}
 					</div>
 				</div>

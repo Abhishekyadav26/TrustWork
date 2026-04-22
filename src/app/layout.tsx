@@ -13,17 +13,26 @@ export const metadata: Metadata = {
   description: 'Decentralized freelance marketplace built on Stellar',
 }
 
+import { ThemeProvider } from "@/components/ThemeProvider"
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className={inter.className}>
-        <SmoothScrollProvider>
-          {children}
-        </SmoothScrollProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SmoothScrollProvider>
+            {children}
+          </SmoothScrollProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
