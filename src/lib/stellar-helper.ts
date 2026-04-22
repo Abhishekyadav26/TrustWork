@@ -10,8 +10,10 @@ import freighterApi from "@stellar/freighter-api";
 // Freighter API types
 interface FreighterAPI {
   getAddress: () => Promise<{ address: string; error?: string }>;
+  requestAccess: () => Promise<{ address: string; error?: string }>;
+  isAllowed: () => Promise<{ isAllowed: boolean; error?: string }>;
+  isConnected: () => Promise<{ isConnected: boolean; error?: string }>;
   signTransaction: (xdr: string, options: { networkPassphrase: string }) => Promise<{ signedTxXdr: string; error?: string }>;
-  isFreighterSupported: () => Promise<boolean>;
 }
 
 // Config
@@ -110,9 +112,8 @@ export class StellarHelper {
   // Wallet methods
   async isFreighterAvailable(): Promise<boolean> {
     try {
-      // Try to get address - if it works, Freighter is available
-      await freighterApi.getAddress();
-      return true;
+      const result = await freighterApi.isConnected();
+      return result.isConnected;
     } catch {
       return false;
     }
@@ -120,6 +121,9 @@ export class StellarHelper {
 
   async isWalletConnected(): Promise<boolean> {
     try {
+      const allowedResult = await freighterApi.isAllowed();
+      if (!allowedResult.isAllowed) return false;
+
       const result = await freighterApi.getAddress();
       return !!(result.address && result.address.startsWith("G") && !result.error);
     } catch {
@@ -129,7 +133,8 @@ export class StellarHelper {
 
   async connectWallet(): Promise<string> {
     try {
-      const result = await freighterApi.getAddress();
+      // requestAccess triggers the Freighter extension popup
+      const result = await freighterApi.requestAccess();
       
       if (result.error) {
         throw new Error(result.error);

@@ -7,6 +7,8 @@ import { WalletConnect } from "@/components/WalletConnect";
 import { Header } from "@/components/ui/header-2";
 import TestimonialV2 from "@/components/ui/testimonial-v2";
 import { FloatingPaths } from "@/components/ui/background-paths";
+import { LogoCloud } from "@/components/ui/logo-cloud-3";
+import { FlickeringFooter } from "@/components/ui/flickering-footer";
 import { JobBoard } from "@/components/JobBoard";
 import { PostJob } from "@/components/PostJob";
 import { Button } from "@/components/ui/button";
@@ -25,6 +27,17 @@ import {
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+const logos = [
+  { src: "https://svgl.app/library/nvidia-wordmark-light.svg", alt: "Nvidia Logo" },
+  { src: "https://svgl.app/library/supabase_wordmark_light.svg", alt: "Supabase Logo" },
+  { src: "https://svgl.app/library/openai_wordmark_light.svg", alt: "OpenAI Logo" },
+  { src: "https://svgl.app/library/turso-wordmark-light.svg", alt: "Turso Logo" },
+  { src: "https://svgl.app/library/vercel_wordmark.svg", alt: "Vercel Logo" },
+  { src: "https://svgl.app/library/github_wordmark_light.svg", alt: "GitHub Logo" },
+  { src: "https://svgl.app/library/claude-ai-wordmark-icon_light.svg", alt: "Claude AI Logo" },
+  { src: "https://svgl.app/library/clerk-wordmark-light.svg", alt: "Clerk Logo" },
+];
 
 export default function Home() {
   const [isConnected, setIsConnected] = useState(false);
@@ -256,6 +269,18 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Trusted By Section */}
+        <section className="relative mx-auto max-w-5xl py-10 md:py-20 z-10">
+          <h2 className="mb-8 text-center font-medium text-foreground text-xl tracking-tight md:text-2xl">
+            <span className="text-muted-foreground">Trusted by top teams.</span>
+            <br />
+            <span className="font-semibold">Used by the leaders in Web3.</span>
+          </h2>
+          <div className="mx-auto my-5 h-px max-w-3xl bg-border [mask-image:linear-gradient(to_right,transparent,black,transparent)]" />
+          <LogoCloud logos={logos} />
+          <div className="mx-auto mt-5 h-px max-w-3xl bg-border [mask-image:linear-gradient(to_right,transparent,black,transparent)]" />
+        </section>
+
         {/* Problem vs Solution Section */}
         <section className="problem-section py-32 relative bg-muted/30 ">
           <div className="container mx-auto px-6">
@@ -370,6 +395,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <FlickeringFooter />
       </div>
     );
   }
